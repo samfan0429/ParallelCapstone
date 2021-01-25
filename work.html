@@ -4,14 +4,16 @@
         <meta charset ="UTF-8">
         <meta name = "viewport" content ="width=device-width", initial-scale="1.0">
         <title>Work</title>
-        <link rel="stylesheet" ,="" type="text/css" href="format1.css">
+        <link rel="stylesheet" ,="" type="text/css" href="menu.css">
+        <link rel="stylesheet" ,="" type="text/css" href="contents.css">
+        <link rel="stylesheet" ,="" type="text/css" href="codehilite.css">
     </head>
 
     <body>
         <div class="wrapper">
             <div class="left">
                 <div class="menu">
-                    <header>Menu Bar</header>
+                    <Header>Capstone 2021</Header>
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="introduction.html">Introduction</a></li>
@@ -21,11 +23,13 @@
                     </ul>
                 </div>
             </div>
-            <div class="right">
-                <div class="contents">
-                    <h1>Welcome to Sun Gyu Park's 2021 Capstone!</h1>
-    
-                </div>
+            <div class="contents">
+                <h1>Initialization</h1>
+                <pre style="font-size: 15px;background-color: antiquewhite;width: 100%;padding: 5px 3px;"><span></span><code><span class="c1">    #Initialize Communicator Object</span>
+    <span class="n" style="text-indent: 0;">comm</span> <span class="o">=</span> <span class="ob">MPI</span><span class="o">.</span><span class="ob">COMM_WORLD</span>
+    <span class="n">id</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">Get_rank</span><span class="p">()</span>            <span class="c1">#number of the process running the code</span>
+    <span class="n">numProcesses</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">Get_size</span><span class="p">()</span>  <span class="c1">#total number of processes running</span></code></pre>
+                
             </div>
             
         </div>
