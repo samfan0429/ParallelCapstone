@@ -1,7 +1,14 @@
 .contents{
     position:relative;
-    width:70%;
+    width:72%;
     height: fit-content;
+    border:2px solid black;
+    padding:10px 10px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    box-shadow: 10px 5px 5px black;
 }
 
 .visuals{
@@ -9,12 +16,19 @@
 }
 
 h1{
+    margin-top: 10px;
     font-size: 50px;
 }
 
 h2{
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+h3{
     font-size: 20px;
-    margin-bottom: -10px;
+    margin-top:0px;
+    margin-bottom: 5px;
 }
 
 p{

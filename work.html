@@ -26,8 +26,33 @@
                 </div>
             </div>
             <div class="contents">
-                <h1>Initialization</h1>
-                <pre style="font-size: 15px;background-color: antiquewhite;width: 100%;padding: 5px 3px;"><span></span><code><span class="c1">    #Initialize Communicator Object</span>
+                <h2>Algorithm</h2>
+                <h3>Step 1</h3>
+                <p>Assuming that we already got the input for the problem size, we initialize the information of the system.</p>
+<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
+    <i>comm</i> &larr; communicator object
+
+    <i>From here, each line is executed in each processor.</i>
+    id &larr; processor id numbered <i>0</i> to <i>N-1</i>
+    size &larr; total number of processors <i>N</i>
+</pre>
+
+                <h3 style="margin-top: 10px;">Step 2</h3>
+                <p>We then allocate the arrays and the range that each processor is going to work on.
+                   In scatter-gather, we have to know how much dummy entries are going to be added because
+                   the program will not distribute the problems, if the size of the problem is not divisible
+                   by the number of processors. 
+                </p>
+<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
+    <i>comm</i> &larr; communicator object
+
+    <i>From here, each line is executed in each processor.</i>
+    id &larr; processor id numbered <i>0</i> to <i>N-1</i>
+    size &larr; total number of processors <i>N</i>
+</pre>
+
+                <h2>Initialization</h2>
+                <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><span></span><code><span class="c1">    #Initialize Communicator Object</span>
     <span class="n" style="text-indent: 0;">comm</span> <span class="o">=</span> <span class="ob">MPI</span><span class="o">.</span><span class="ob">COMM_WORLD</span>
     <span class="n">id</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">Get_rank</span><span class="p">()</span>            <span class="c1">#number of the process running the code</span>
     <span class="n">numProcesses</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">Get_size</span><span class="p">()</span>  <span class="c1">#total number of processes running</span></code></pre>
