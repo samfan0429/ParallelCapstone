@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset ="UTF-8">
+        <meta name = "viewport" content ="width=device-width", initial-scale="1.0">
+        <title>Work</title>
+        <link rel="stylesheet" ,type="text/css" href="menu.css">
+        <link rel="stylesheet" ,type="text/css" href="contents.css">
+        <link rel="stylesheet" ,type="text/css" href="codehilite.css">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <Header>Capstone 2021</Header>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="introduction.html">Introduction</a></li>
+                    <li><a href="scatterAlgorithm.html">Work</a></li>
+                    <li><a href="conclusion.html">Future Work</a></li>
+                    <li><a href="references.html">References</a></li>
+                    <li><a href="references.html">References</a></li>
+                    <li><a href="references.html">References</a></li>
+                </ul>
+            </nav>
+            <div class="contents">
+                <h2>"Scatter-Gather" Algorithm</h2>
+                <h3>Step 1</h3>
+                <p>Assuming that we already got the input for the problem size, we initialize the information of the system.</p>
+<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
+    <i><b>In main:</b></i>
+        <i>comm</i> &larr; communicator object
+
+        <i>From here, each line is executed in each processor.</i>
+        id &larr; processor id numbered <i>0</i> to <i>N-1</i>
+        procSize &larr; total number of processors <i>N</i>
+</pre>
+
+<h3 style="margin-top: 10px;">Step 2 </h3>
+<p>We then allocate the arrays and the range that each processor is going to work on.
+    In scatter-gather, we have to know how much dummy entries are going to be added because
+    the program will not distribute the problems, if the size of the problem is not divisible
+    by the number of processors. From here, the master worker will be the id with zero.
+    We want to have the main array be in the master worker and have the rest send over
+    after finishing the computation. We also need to allocate spaces in each worker
+    to receive the address to the main array in scatter.
+</p>
+<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
+    <b>function CalculateSize (procSize s, problemSize n)</b>:
+        (<i>C</i> is just a constant value to the size of matrix)
+        <b>If</b> <i>Cn<sup>2</sup></i> % procSize!=0:
+            dummies &larr; <i>procSize</i> - <i>Cn<sup>2</sup> % procSize</i>
+        <b>Else</b>:
+            dummies &larr; 0
+        return <i>Cn<sup>2</sup></i> + <i>dummies</i> 
+    
+    <b>function BuildMatrix (Total number of entries <i>TotSize</i>) :</b>
+        A &larr; flattened NumPy array with size of TotSize
+        return A;
+
+    <i><b>In main:</b></i>
+        <i>For all wokers:</i>
+            TotSize = CalculateSize(<i>s</i>,<i>n</i>)
+
+        <b>If</b> id == 0:
+            A &larr; BuildMatrix (TotSize)
+                
+        <i>For all wokers:</i>
+            part &larr; 1D numpy array with size (TotSize divided by procSize)
+</pre>
+<h3 style="margin-top: 10px;">Step 3 </h3>
+<p> We are done setting up and ready to scatter the main array.
+    The master worker also needed to allocate memory because it also gets
+    scattered into the master worker as well. The next problem that rises
+    is which workers are going to work on the extra problem when the matrix size
+    is not divisible by the number of workers as well as the actual iteration
+    values.
+</p>
+<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
+    <b>function getRange (Problem Size <i>Cn<sup>2</sup></i>, <i>id</i>) :</b>
+
+    <i><b>In main:</b></i>
+        <i>Scatter the array from id=0 to the allocated space in matrix "part"</i>
+
+
+</pre>
+
+            </div>
+            
+        </div>
+        
+
+
+    </body>
+</html>
+
+

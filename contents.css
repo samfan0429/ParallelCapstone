@@ -1,6 +1,5 @@
 .contents{
-    position:relative;
-    width:72%;
+    width:80%;
     height: fit-content;
     border:2px solid black;
     padding:10px 10px;
@@ -9,6 +8,9 @@
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     box-shadow: 10px 5px 5px black;
+    margin-left: auto;
+    margin-right:auto;
+    margin-top:10px;
 }
 
 .visuals{
