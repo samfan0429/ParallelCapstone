@@ -19,44 +19,29 @@ header{
     margin-bottom: 10px;
 }
 
-nav{
-    margin-left: auto;
-    margin-right: auto;
-    background-color: rgb(255, 255, 255);
-    width: 80%;
-    height:50px;
-}
 
-nav ul{
-    margin:0;
-    padding:0;
-    margin-bottom: 0px;
-    height: 50px;
-    width: 100%;
-    margin: 0 0;
-    background-color: gray;
-}
+/* *{margin: 0; padding: 0;} */
+nav{width: 80%;margin: auto;}
 
-nav ul li{
-    list-style-type: none;
-    width: 10%;
-    float:left;
-    border-right: 1px solid white;
-}
+ul{margin: 0; padding: 0;list-style: none;}
 
-li>a{
-    display: block;
-    color: white;
-    text-decoration: none;
-    line-height: 50px;
-    text-align: center;
-}
+ul li{ width: 19%; background: gray; float: left; height: 35px; line-height: 35px; text-align: center; margin-right: 2px; position: relative;}
 
-li>a:hover{
-    background-color: rgb(0, 0, 0);
-    display: block;
-    color: white;
-    text-decoration: none;
-    /* transition:0.2s; */
-    /* border-bottom: 2px solid red; */
-}
+ul li:hover{ background: black;}
+
+ul li a{color: #fff; text-decoration: none; font-family: sans-serif; display: block;}
+
+ul li ul li{ width: 100%;border-top: 1px solid #fff;}
+
+ul li ul{display: none;}
+
+ul li:hover ul{ display: block;color:white;}
+
+ul li ul .itam-2{position: absolute; left: 122px; top: 0; display: none;}
+
+ul li ul li:last-child:hover .itam-2{display: block;}
+
+section{width: 800px; margin: auto; clear: both; background: #e1e1e1;}
+
+
+

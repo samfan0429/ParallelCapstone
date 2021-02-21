@@ -80,79 +80,12 @@
     values.
 </p>
 <pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
-    <b>function getRange (Problem Size <i>Cn<sup>2</sup></i>, <i>id</i>, <i>Communicator comm</i>, procSize) :</b>
-        range &larr; (round down) (<i>Cn<sup>2</sup>/procSize</i>)
-        start = 0
-        end = 0
-        <b>If</b> (<i>Cn<sup>2</sup>%procSize</i>)!=0 <b>AND</b> <i>id</i> &geq; <i>procSize-Cn<sup>2</sup>%procSize</i> :
-            range = range + 1
-        <b>If</b> <i>Worker 0</i> :
-            start = 0
-            end = start + range
-            send <i>end</i> to processor 1
-        <b>Else If</b> <i>Last Worker</i> :
-            start &larr; receive end from previous worker
-            end = start + range
-        <b>Else</b> :
-            start &larr; receive end from previous worker
-            end = start + range
-            send <i>end</i> to the Worker <i>id+1</i>
-
-        return start,end
-        
+    <b>function getRange (Problem Size <i>Cn<sup>2</sup></i>, <i>id</i>) :</b>
 
     <i><b>In main:</b></i>
         <i>Scatter the array from id=0 to the allocated space in matrix "part"</i>
 
-        <i>start,end</i> &larr; getRange(<i>Cn<sup>2</sup></i>, <i>id</i>, <i>comm</i>, procSize)
-</pre>
 
-<h3 style="margin-top: 10px;">Step 4 </h3>
-<p> Now each processor finally knows where to start and where to end. We can
-    finally compute the portions of matrix in each processor. The details about
-    how the flattened range values were used will be explained in a later.
-    For now, let us assume that we have now finished building each matrix on this step
-    and waiting to put the matrices in the original NumPy array in the master worker in the next one.
-</p>
-
-<h3 style="margin-top: 10px;">Step 5 </h3>
-<p> The matrix computations are done. We want to gather the scattered array now.
-    In the MPI4PY library, there is a shortcut command that automatically gathers
-    the arrays in order. The pseudocode will have <i>gather</i> which will imply
-    that the scattered arrays are being gathered back to the master worker.
-</p>
-
-<p> The gathering of the arrays is very simple with the shortcuts provided.
-    The problem is knowing which coordinates of the flattened matrix are the
-    dummies contained. We know that all workers with id number less than
-    (<i>procSize-Cn<sup>2</sup>%procSize</i>) have a range of (<i>Cn<sup>2</sup>/procSize</i>)
-    rounded down. There is also a function in Python that deletes the designated locations
-    in an array by giving a full set of coordinates without having to be concerned
-    about changing the array's size as we delete each element.
-</p>
-
-<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
-    <b>function getDummyLocations (<i>range</i>,<i>Cn<sup>2</sup></i>,<i>procSize</i>) :</b>
-        locationList = <i>Empty list</i>        
-        
-        curr = 0 (A tracking variable)
-        
-        <i>The following goes from 0 to <i>procSize-Cn<sup>2</sup>%procSize-1</i></i>
-        <b>for</b> in range(<i>procSize-Cn<sup>2</sup>%procSize</i>) :
-            locationList.append(curr+range)
-            curr = curr + range
-        return locationList
-        
-
-    <i><b>In main but only with master worker:</b></i>
-        <i>Gather the array back to matrix <i>A</i> in id=0 with "parts"</i>
-
-        <i>dummyLocations</i> &larr; getDummyLocations(<i>end-start</i>,<i>Cn<sup>2</sup></i>,<i>procSize</i>)
-
-        <i>A</i> deletes in locations <i>dummyLocations</i>
-
-        <i>Master Worker then proceeds to compute the final value. Nothing is parallel from this point.
-        </i>
 </pre>
 
             </div>
