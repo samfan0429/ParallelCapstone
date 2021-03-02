@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset ="UTF-8">
+        <meta name = "viewport" content ="width=device-width", initial-scale="1.0">
+        <title>Work</title>
+        <link rel="stylesheet" ,type="text/css" href="menu.css">
+        <link rel="stylesheet" ,type="text/css" href="contents.css">
+        <link rel="stylesheet" ,type="text/css" href="codehilite.css">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <Header>Capstone 2021</Header>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="introduction.html">Introduction</a></li>
+                    <li><a href="overview.html">Work</a>
+                        <ul>
+                            <li><a href="mpi4py.html">MPI4PY Functions</a></li>
+                            <li><a href="scatterAlgorithm.html">Scatter-Gather</a></li>
+                            <li><a href="mpAlgorithm.html">Message-Passing</a></li>
+                            <li><a href="results.html">Results</a></li>
+                        </ul></li>
+                    <li><a href="conclusion.html">Future Work</a></li>
+                    <li><a href="references.html">References</a></li>
+                </ul>
+            </nav>
+            <div class="contents">
+                <h1 style="text-align: center;">Overview</h1>
+                <p>Here, I explain about the different
+                     two methods, Message-Passing and
+                    Scatter-Gather, that we used in parallelizing
+                    using MPI4PY. Further algorithmic procedures will
+                    be discussed in the next two pages. <br>
+                    <br>
+                    Let us take an example of a situation where
+                    we are aiming to build a 2D matrix with a size
+                    5 by 5 with total of 25 entries and assume
+                    that we are attempting to distribute the workload
+                    into 4 processors. One thing to keep in mind to
+                    alleviate terminology confusion is that
+                    the utilized processors are called workers. You can
+                    think of processors and workers nearly equivalent terms
+                    as you read.
+                    <br>
+                    <br>
+                    Another warning is that the algorithms that come
+                    after this page are based on
+                    multidimensional arrays with dimension size greater than
+                    just 2. This is just an example of how the works are done
+                    in a general sense.
+                </p>
+                <h2>Scatter-Gather</h2>
+                <p> Scatter is a function from MPI4PY package
+                    that automatically assigns each worker where it should be assigned
+                    in a designated array from a particular worker. Taking a quick example, if 
+                    we are to scatter an 1D array filled with values 1 to 24 among 4
+                    workers, worker 0 gets 1 to 6; worker 1 gets 7 to 12 and so on. The
+                    order of assignment goes in order of the assigned worker id number. Gather
+                    is the other way. The parts of the arrays are brought to the designated
+                    space in order. If the given example of 1D array with values 1 to 24 scattered
+                    and each worker did an operation where each value was doubled, the gathered
+                    array would have 2, 4, 6, . . . , 46, 48.
+                    <br> <br>
+                    In scatter-gather, even if we have a 2D array, we treat
+                    the problem as if we are using a 1D array. In our example case,
+                    5 by 5 would be 25 entries. We attempt to distribute the 
+                    25 problems to 4 workers. Ideally, distributing the work
+                    by three 6's and one 7 is the best. The problem is that
+                    this method only permits a problem size divisible by
+                    the number of processors, indicating that there is a
+                    need for dummy entries to fill the gap.
+                </p>
+                <figure>
+                    <img src="figures/figure1.png" style="width:100%">
+                    <figcaption style="font-size:15px;">
+                        Figure 1. This is the first part. Filling a 5 by 5 matrix with 4 processors is impossible
+                        with scatter-gather, as 25 is not divisible by 4. So we need to
+                        extend few more entries to initialize an array with a size divisible
+                        by 4. Because 25 divided by 4 has a remainder of 3, we would be
+                        adding 3 more entries to make 28, which is the next divisble number after
+                        25.
+                    </figcaption>
+                </figure>
+                <figure>
+                    <img src="figures/figure2.png" style="width:100%">
+                    <figcaption style="font-size:15px;">
+                        Figure 2. The next step after initialization is to distribute (scatter)
+                        the array to different workers. Most of the times, we will have
+                        the extra amount of work towards the last worker. This now makes
+                        the situation ideal as intended 6, 6, 6, and 7.
+                    </figcaption>
+                </figure>
+                <figure>
+                    <img src="figures/figure3.png" style="width:100%">
+                    <figcaption style="font-size:15px;">
+                        Figure 3. Assuming each computations are over and we want
+                        the gather to occur. After doing gather, we will have dummies
+                        in between. We eliminate the dummies in another process. But the
+                        main part of the parallelization is now done. The main worker (worker 0)
+                        would reshape the array into a 2D one afterwards.
+                    </figcaption>
+                </figure>
+                <h2>Message-Passing</h2>
+                <p> In this method, we treat the problem size as the number of rows.
+                    When we have a 5 by 5 matrix, we treat the problem size as 5. With
+                    4 workers, we would have a distribution of three 1's and one 2. The
+                    positive aspect about this method is that we are not bound to have
+                    a situation where the number of the problem size needs to divisible
+                    by the number of workers. Unlike how we initialized the main array as 1D,
+                    we do not need to have the matrix reshaped after finishing the computations. We
+                    can instead receive each row as it is and fill them up. Unlike scatter-gather
+                    where the process of collecting the parts automatically in order, we need
+                    to explicitly assign the main worker to receive the message (the matrix parts)
+                    in order.
+                </p>
+                <figure>
+                    <img src="figures/figure4.png" style="width:100%">
+                    <figcaption style="font-size:15px;">
+                        Figure 4. This is just a one short step process. We initialize the
+                        work needed to be done in each worker and send them to the main 
+                        worker (worker 0) to place each row where it belongs.
+                    </figcaption>
+                </figure>
+
+            </div>
+            
+        </div>
+        
+
+
+    </body>
+</html>
+
+

@@ -3,7 +3,7 @@
     <head>
         <meta charset ="UTF-8">
         <meta name = "viewport" content ="width=device-width", initial-scale="1.0">
-        <title>Work</title>
+        <title>Message-Passing</title>
         <link rel="stylesheet" ,type="text/css" href="menu.css">
         <link rel="stylesheet" ,type="text/css" href="contents.css">
         <link rel="stylesheet" ,type="text/css" href="codehilite.css">
@@ -16,10 +16,11 @@
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="introduction.html">Introduction</a></li>
-                    <li><a href="scatterAlgorithm.html">Work</a>
+                    <li><a href="overview.html">Work</a>
                         <ul>
-                            <li><a href="scatterAlgorithm.html">Scatter-Gather Algorithm</a></li>
-                            <li><a href="mpAlgorithm.html">Message-Passing Algorithm</a></li>
+                            <li><a href="mpi4py.html">MPI4PY Functions</a></li>
+                            <li><a href="scatterAlgorithm.html">Scatter-Gather</a></li>
+                            <li><a href="mpAlgorithm.html">Message-Passing</a></li>
                             <li><a href="results.html">Results</a></li>
                         </ul></li>
                     <li><a href="conclusion.html">Future Work</a></li>
@@ -27,9 +28,17 @@
                 </ul>
             </nav>
             <div class="contents">
-                <h2>"Scatter-Gather" Algorithm</h2>
+                <h1>Simple Message-Passing</h1>
+                <p>In the following page, I will be discussing about 
+                    the specific steps in getting the message-passing algorithm
+                    done. The steps are similar to the scatter-gather but with minor
+                    changes. We are going to distribute the work by the size of
+                    the outer-most dimension. Our matrix is going to be <i>n</i> by
+                    <i>C</i> (Constant) by <i>C</i> by <i>n</i> by <i>C</i>. The distribution
+                    will be divided in <i>n</i> parts.
+                </p>
                 <h3>Step 1</h3>
-                <p>Assuming that we already got the input for the problem size, we initialize the information of the system.</p>
+                <p>Same as scatter-gather, we initialize the communicator along with other components.</p>
 <pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
     <i><b>In main:</b></i>
         <i>comm</i> &larr; communicator object
@@ -40,52 +49,84 @@
 </pre>
 
 <h3 style="margin-top: 10px;">Step 2 </h3>
-<p>We then allocate the arrays and the range that each processor is going to work on.
-    In scatter-gather, we have to know how much dummy entries are going to be added because
-    the program will not distribute the problems, if the size of the problem is not divisible
-    by the number of processors. From here, the master worker will be the id with zero.
-    We want to have the main array be in the master worker and have the rest send over
-    after finishing the computation. We also need to allocate spaces in each worker
-    to receive the address to the main array in scatter.
+<p> We previously used <i>Cn<sup>2</sup></i> as our problem size
+    but we are only using <i>n</i> this time. This time, we do not require
+    placing dummies in the matrix. We will be skipping most of
+    Step 2 of scatter-gather and jump right to Step 3. The only significance
+    of this step would be creating space to receive processed data to the
+    main matrix from later computation from each worker.
 </p>
 <pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
-    <b>function CalculateSize (procSize s, problemSize n)</b>:
-        (<i>C</i> is just a constant value to the size of matrix)
-        <b>If</b> <i>Cn<sup>2</sup></i> % procSize!=0:
-            dummies &larr; <i>procSize</i> - <i>Cn<sup>2</sup> % procSize</i>
-        <b>Else</b>:
-            dummies &larr; 0
-        return <i>Cn<sup>2</sup></i> + <i>dummies</i> 
-    
-    <b>function BuildMatrix (Total number of entries <i>TotSize</i>) :</b>
-        A &larr; flattened NumPy array with size of TotSize
+    <b>function BuildMatrix (Problem Size <i>n</i>) :</b>
+        A &larr; NumPy array with dimensions of <i>n</i> by <i>C</i> by <i>C</i> by <i>n</i> by <i>C</i>
         return A;
 
     <i><b>In main:</b></i>
-        <i>For all wokers:</i>
-            TotSize = CalculateSize(<i>s</i>,<i>n</i>)
-
         <b>If</b> id == 0:
-            A &larr; BuildMatrix (TotSize)
-                
-        <i>For all wokers:</i>
-            part &larr; 1D numpy array with size (TotSize divided by procSize)
+            A &larr; BuildMatrix (<i>n</i>) <i>Filled with zeros</i>
 </pre>
 <h3 style="margin-top: 10px;">Step 3 </h3>
-<p> We are done setting up and ready to scatter the main array.
-    The master worker also needed to allocate memory because it also gets
-    scattered into the master worker as well. The next problem that rises
-    is which workers are going to work on the extra problem when the matrix size
-    is not divisible by the number of workers as well as the actual iteration
-    values.
+<p> Notice that we did not yet allocate a temporary array in each worker 
+    to work on. This is because the problem now is not bound to being necesarily
+    a 1D NumPy array and divisible by the number of processors. 
+    In message-passing, we are permitted to communicate 
+    multidimensional NumPy arrays as they are. We can allocate space
+    as much as we need to free ourselves from considering dummies.
 </p>
 <pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
-    <b>function getRange (Problem Size <i>Cn<sup>2</sup></i>, <i>id</i>) :</b>
+    <b>function getRange (Problem Size <i>n</i>, <i>id</i>, <i>procSize</i>) :</b>
+        range &larr; (round down) (<i>n/procSize</i>)
+        start = 0
+        end = 0
+        <b>If</b> (<i>n%procSize</i>)!=0 <b>AND</b> <i>id</i> &geq; <i>procSize-n%procSize</i> :
+            range = range + 1
+        <b>If</b> <i>Worker 0</i> :
+            start = 0
+            end = start + range
+            send <i>end</i> to worker 1
+        <b>Else If</b> <i>Last Worker</i> :
+            start &larr; receive end from previous worker
+            end = start + range
+        <b>Else</b> :
+            start &larr; receive end from previous worker
+            end = start + range
+            send <i>end</i> to the Worker <i>id+1</i>
 
     <i><b>In main:</b></i>
-        <i>Scatter the array from id=0 to the allocated space in matrix "part"</i>
+        <i>start,end</i> &larr; getRange(<i>n</i>, <i>id</i>, <i>comm</i>, procSize)
 
+        <i>For all wokers:</i>
+            part &larr; Multidimensional NumPy array with dimensions <i>(end-start)</i> by <i>C</i> by <i>C</i> by <i>n</i> by <i>C</i>
 
+</pre>
+<h3 style="margin-top: 10px;">Step 4 </h3>
+<p> At this step, each processor (worker) will be working on their range of values
+    to fill the matrix. Let us assume the computations are done here.
+</p>
+
+<h3 style="margin-top: 10px;">Step 5 </h3>
+<p> We have now filled the matrices <i>part</i> with intended values.
+    Scatter-gather had a shortcut where the data is automatically placed back
+    to the main processor (worker zero). Here, because we did not use scatter
+    to have the processors automatically remember their positions, we have to
+    collect and insert the matrix parts manually. Once we do so, there is no resizing the dimensions
+    needed as the matrix is already set to the necessary dimenisons for computations.
+</p>
+<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
+    <b>function insert(<i>id</i>, <i>procSize</i>,<i>part</i>,<i>A</i>) :</b>
+        <b>If NOT</b> <i>Worker 0</i>:
+            Send <i>part</i> to Worker 0
+        <b>If</b> <i>Worker 0</i>:
+            Insert the first part to <i>A</i>
+            <b>for</b> <i>i</i> from 1 to <i>procSize-1</i>:
+                temp &larr; receive from worker <i>i</i>
+                Insert <i>temp</i> to <i>A</i>
+                
+    <i><b>In main:</b></i>
+        insert(id, procSize, part, A)
+
+        <i>From here, everything is done by the main worker just as we did in scatter-gather.
+        </i>
 </pre>
 
             </div>
