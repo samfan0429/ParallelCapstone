@@ -16,7 +16,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .cs { color: #408080; font-style: italic } /* Comment.Special */
 .gd { color: #A00000 } /* Generic.Deleted */
 .ge { font-style: italic } /* Generic.Emph */
-.gr { color: #FF0000 } /* Generic.Error */
+.if { color: #FF0000 } /* Generic.Error */
 .gh { color: #000080; font-weight: bold } /* Generic.Heading */
 .gi { color: #00A000 } /* Generic.Inserted */
 .go { color: #888888 } /* Generic.Output */
@@ -72,3 +72,4 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .vm { color: #19177C } /* Name.Variable.Magic */
 .il { color: #666666 } /* Literal.Number.Integer.Long */
 .ob { color: rgb(248, 71, 1) } /* Name.Variable.Global */
+.b { color: #0044DD } /* Name.Variable.Instance */

@@ -29,11 +29,15 @@
             </nav>
             <div class="contents">
                 <h1 style="text-align: center;">Overview</h1>
-                <p>Here, I explain about the different
-                     two methods, Message-Passing and
+                <p>Here, I explain about the two different parallelization
+                     methods from MPI4PY, Message-Passing and
                     Scatter-Gather, that we used in parallelizing
-                    using MPI4PY. Further algorithmic procedures will
-                    be discussed in the next two pages. <br>
+                    using MPI4PY. During the summer research, we used the MPI4PY package along with
+                    NumPy package with its array functions. Functions, like "<span class="ow">empty</span>(<i>size</i>, dtype<span class="b">=</span>complex)," 
+                    create an empty array with the given size for complex values. I will put a link to a documentation
+                    regarding the NumPy library in the references. Please look into that as well.
+                    Further algorithmic procedures will be discussed in the next few pages. 
+                    <br>
                     <br>
                     Let us take an example of a situation where
                     we are aiming to build a 2D matrix with a size
@@ -74,7 +78,7 @@
                     need for dummy entries to fill the gap.
                 </p>
                 <figure>
-                    <img src="figures/figure1.png" style="width:100%">
+                    <img src="figures/figure1.png" style="width:70%">
                     <figcaption style="font-size:15px;">
                         Figure 1. This is the first part. Filling a 5 by 5 matrix with 4 processors is impossible
                         with scatter-gather, as 25 is not divisible by 4. So we need to
@@ -85,7 +89,7 @@
                     </figcaption>
                 </figure>
                 <figure>
-                    <img src="figures/figure2.png" style="width:100%">
+                    <img src="figures/figure2.png" style="width:70%">
                     <figcaption style="font-size:15px;">
                         Figure 2. The next step after initialization is to distribute (scatter)
                         the array to different workers. Most of the times, we will have
@@ -94,7 +98,7 @@
                     </figcaption>
                 </figure>
                 <figure>
-                    <img src="figures/figure3.png" style="width:100%">
+                    <img src="figures/figure3.png" style="width:70%">
                     <figcaption style="font-size:15px;">
                         Figure 3. Assuming each computations are over and we want
                         the gather to occur. After doing gather, we will have dummies
@@ -115,9 +119,16 @@
                     where the process of collecting the parts automatically in order, we need
                     to explicitly assign the main worker to receive the message (the matrix parts)
                     in order.
+                    <br> <br>
+                    As one reads, one might think how the former is going to be
+                    a better choice because of fair work distribution. That is dependent
+                    on how much each problem weighs in total runtime. For example, 
+                    if one has the former method take 25 milliseconds but this one
+                    takes 27 milliseconds, would the person explore the first method
+                    and complicate the solution?
                 </p>
                 <figure>
-                    <img src="figures/figure4.png" style="width:100%">
+                    <img src="figures/figure4.png" style="width:70%">
                     <figcaption style="font-size:15px;">
                         Figure 4. This is just a one short step process. We initialize the
                         work needed to be done in each worker and send them to the main 
