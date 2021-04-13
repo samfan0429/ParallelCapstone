@@ -11,7 +11,6 @@
 
     <body>
         <div class="wrapper">
-            <Header>Capstone 2021</Header>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -23,42 +22,95 @@
                             <li><a href="mpAlgorithm.html">Message-Passing</a></li>
                             <li><a href="results.html">Results</a></li>
                         </ul></li>
-                    <li><a href="conclusion.html">Conclusion & Future Work</a></li>
+                    <li><a href="conclusion.html">Future Work</a></li>
                     <li><a href="references.html">References</a></li>
                 </ul>
             </nav>
+            <br>
             <div class="contents">
-                <h1 style="text-align: center;">Simple Message-Passing</h1>
-                <p>In the following page, I will be discussing about 
-                    the specific steps in getting the message-passing algorithm
-                    done. The steps are similar to the scatter-gather but with minor
-                    changes.
+                <h1 style="text-align: center;">Scalability Analysis</h1>
+                <p>
+                    Scalability is the ability to utilize additional processors for speed-up and efficiency. 
+                    Ideally, when we have a progrma that runs on <i>O(n)</i> and double
+                    the number of processors for a given problem size, we expect the runtime
+                    to be halved. But usually, this is not the case. Sometimes, we may find that
+                    parallelization does not have as much impact in runtime.
+                    <br> <br>
+                    The scalability in the understanding the performance with
+                    additional processors was described through its efficiency and speed-up
+                     using the "strong-scalability" test. The
+                    strong-scalability test is where measure the runtime of a program where
+                    we keep a constant problem size but with increasing number of processors.
+                    The automated test was conducted by using a "Shell" file that executes
+                    Bash command in Linux environment (Macalester server runs Linux OS). We started from one processor and used all the even number of processors
+                     (with an exception to 14) up to 16 for each given problem size. The runtimes were averaged
+                     after 10 trials for each number of processors.
                 </p>
-                <h3>Step 1</h3>
-                <p>Assuming that we already got the input for the problem size, we initialize the information of the system.</p>
-<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
-    <i><b>In main:</b></i>
-        <i>comm</i> &larr; communicator object
+                <figure>
+                    <img src="graphs/runtime_serial.png" style="width:70%">
+                    <figcaption style="font-size:15px;">
+                        <b>Graph 1.</b> The given graph is the average runtimes of executing
+                        the most time-expensive part of the program in serial in respect to changing problem size. Because we only manage to test out two of the dimensions
+                        out of few in the array, we observe that a relationship of the problem
+                        size and the runtime being <i>O(n<sup>2</sup>)</i>.
+                    </figcaption>
+                </figure>
 
-        <i>From here, each line is executed in each processor.</i>
-        id &larr; processor id numbered <i>0</i> to <i>N-1</i>
-        procSize &larr; total number of processors <i>N</i>
-</pre>
+                <p>
+                    As mentioned, the above is the runtime of the original
+                    serial version of the most time-expensive part of the program which is filling the array. Other parts, such as
+                    initialization and serial computation of the final output using the built array, are barely
+                    comparable to the time that it takes to build an array as we increase the
+                    problem size. For example, from the graph above, when problem size <i>N</i> is 257 (at the far right), we
+                    the actual average runtime is around 450 seconds. Within 450, the runtime of building the array
+                    contributes over 440 seconds. The duration of 5 to 10 seconds is bearable but 440 seconds
+                    is over 7 minutes. If we were to consider that this is <i>O(n<sup>2</sup>)</i>, the runtime would be
+                    so much greater. As we increase the problem size, the biggest consequence of increased runtime lies
+                    in building the main array.
 
-<h3 style="margin-top: 10px;">Step 2 </h3>
-<p>We then allocate the arrays and the range that each processor is going to work on.
-</p>
-<pre style="font-size: 15px;width: 99%;padding: 2px 3px;margin-top: -3px;">
-    <b>function CalculateSize (procSize s, problemSize n)</b>:
-        (<i>C</i> is just a constant value to the size of matrix)
-        <b>If</b> <i>Cn<sup>2</sup></i> % procSize!=0:
-            dummies &larr; <i>procSize</i> - <i>Cn<sup>2</sup> % procSize</i>
-        <b>Else</b>:
-            dummies &larr; 0
-        return <i>Cn<sup>2</sup></i> + <i>dummies</i> 
-    
-</pre>
+                    <br><br>
+                    When we double the problem size in <i>O(N<sup>2</sup>)</i>, we expect the runtime to quadruple. Then 
+                    when we double the problem size and the number of processors in workers, we should get the runtime to double. With
+                    some spoilers to the result, you will be noticing some noticeable speed-ups. The parallelization with MPI4PY did make
+                    difference to the program's overall runtime. Even so, they are not perfectly ideal.
+                </p>
+                <h2>Scalability-Analysis with Simple Message-Passing</h2>
+                <figure>
+                    <img src="graphs/speedup.png" style="width:70%">
+                    <figcaption style="font-size:15px;">
+                        <b>Graph 2.</b> This is the speed-ups for each problem sizes with different
+                        number of processors, using the simple message-passing method. 
+                        The y-axis value, speed-up, indicates how many times
+                        faster did the program run with the given number of processors, compared
+                        to a serial version of the program.
+                    </figcaption>
+                </figure>
 
+                <figure>
+                    <img src="graphs/efficiency.png" style="width:70%">
+                    <figcaption style="font-size:15px;">
+                        <b>Graph 3.</b> This is the efficiency of each processor when the program is
+                            running with given number of processors, using the simple message-passing method. 
+                            The efficiency is the value
+                            that represents the average amount of speed-up each processor contributes
+                            to the overall speed-up. For example, if we have 0.75 in efficiency and
+                            ~12 in speed-ups with 16 processors. We are saying each processor is doing
+                            75 percent of what it is supposed to perform ideally.
+                        
+                    </figcaption>
+                </figure>
+                <p>
+                    The larger the problem size gets, the more the speed-up and efficiency
+                    of additional processors become ideal. The processors attain greater 
+                    efficiency when having smaller number of processors. Having 2 processors
+                    in greater problem size results in a greater efficiency than when we
+                    have 16 processors. One possible reason for such phenomenon would be
+                    the fact that the communicator is delaying the work in the processes. Whatever
+                    the reason might be to explain the dilemma, the speed-ups did exist and the
+                    program did run faster by a noticeable amount. 
+                    So, the parallelization was significant to the program's
+                    runtime.
+                </p>
             </div>
             
         </div>

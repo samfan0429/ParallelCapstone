@@ -11,7 +11,6 @@
 
     <body>
         <div class="wrapper">
-            <Header>Capstone 2021</Header>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -27,13 +26,14 @@
                     <li><a href="references.html">References</a></li>
                 </ul>
             </nav>
+            <br>
             <div class="contents">
                 <h1 style="text-align: center;">Introduction</h1>
                 <h2>What is MPI?</h2>
                 <div style="padding-top: 0px;">
                     <p>First, let us briefly describe Flynn's Taxonomy. Flynn's taxonomy is used to classify parallel hardwares, depending on how the instruction and data streams are handled in the system. The main four frames of classification are SISD, SIMD, MISD and MIMD. Before explaining further, the letters mean the following: "M'' is for multiple; "S" is for single; "I" is for instructions; "D" is for data. </p>
-                    <p>MI (multiple instructions) means that there exists different sets of instructions in the processors to work through data. They could be working on a shared single data (SD) or different multiple sets of data (MD) of their own. The program that we made deals with MIMD, where we have different/multiple instructions given to each processor as well as different initialization of datasets.</p>
-                    <p>The idea of message-passing is that a processor sends "message," any general form of data, that is stored inside its portion of the memory to another processor through a network which interconnects the processors. Then we create the communication instruction using what we call as MPI. MPI stands for "Message-Passing Interface." It is a library that can be called to set up distributed-memory systems (Pacheco, 83)[1]. With MPI, we are setting up a communicator with instructions on what each processor should be doing and speed up the execution of programs/commands by having work done in parallel.</p>
+                    <p>MI (multiple instructions) means that there exists different sets of instructions in the processors to work through data. They could be working on a shared single data (SD) or different multiple sets of data (MD) of their own. Message-passing deals with MIMD, where we have different/multiple instructions given to each processor as well as different initialization of datasets.</p>
+                    <p>The idea of message-passing is that a processor sends "message," any general form of data, that is stored inside its portion of the memory to another processor through a network which interconnects the processors. Then we create the communication instruction using what we call as MPI. MPI stands for "Message-Passing Interface." It is an interface to set up distributed-memory systems (Pacheco, 83)[1]. With MPI, we are setting up a communicator with instructions on what each processor should be doing and speed up the execution of programs/commands by having work done in parallel.</p>
                     <p>The convenient part about MPI is that we can set each processor to do individual work. If we have 256 problems and have 8 processors on deck, we can assign each processor with 32 problems each and have the results be gathered by the master worker (main processor) in the end. Then anything that needs to be done collectively and has dependencies on other problems can be done in serial. The increase in runtime will generally follow the Big-O notation but the total time for the program to run will be shorter by a factor of <i>1/n</i> (<i>n</i> for number of processors) for bigger problem sets. This may not come out to be very apparent in small problem sizes because setting up the processors initially may consume time comparable to the execution of the whole program.</p>
                     <br>
                 </div>
@@ -45,12 +45,12 @@
                 <h2>Then what is MPI4PY?</h2>
                 <div style="padding-top: 0px;">
                     <p>The MPI4PY is a solution to the above issue. The idea is that we hold multiple interpreters. Each processor will have an interpreter of their own. The GIL only permits one thread at a time but if we have an interpreter in each processor (each processor has 2 threads), we can have multiple processes.</p>
-                    <p>MPI4PY is an abbreviation for "MPI For Python." This particular Python package based its syntax and semantics on the MPI-2 C++ bindings [2]. In this library, we first have to set up a communicator in order to start. Upon declaring and initializing the communicator, we assign each processor with its own unique ID. The communicator assigns the master worker (main processor) as zero and the rest from 1 to n-1, where n is the number of processes initialized.</p>
+                    <p>MPI4PY is an abbreviation for "MPI For Python." This particular Python package based its syntax and semantics on the MPI-2 C++ bindings [2]. In this library, we first have to set up a communicator in order to start. Upon declaring and initializing the communicator, we assign each processor with its own unique ID. The communicator assigns the master worker (main processor) as zero and the rest from 1 to <i>n</i>-1, where n is the number of processes initialized.</p>
                     <br>
                 </div>
                 <h2>Why MPI4PY?</h2>
                 <div style="padding-top: 0px;">
-                    <p>I have already mentioned the basic reason with GIL and its issues. There are definitely other choices like Pymp (Python Multiprocessing). Pymp has a syntax like OpenMP where we wrap it around loops but Pymp library assumes that the OS, the running environment, has an embedded "fork()" method to create multiple processes of its own. This means that it does not run on Windows. It also seemed not universal for all Mac users after witnessing failures on multiple Mac devices. Afterall, the developers did indicate that the library is specifically built for the Linux OS. </p>
+                    <p>I have already mentioned the basic reason with GIL and its issues. There are definitely other choices like Pymp (Python Multiprocessing). Pymp has a syntax like OpenMP where we wrap it around loops but Pymp package assumes that the OS, the running environment, has an embedded forking method to create multiple processes of its own. This means that it does not run on Windows. It also seemed not universal for all Mac users after witnessing failures on multiple Mac devices. Afterall, the developers did indicate that the library is specifically built for the Linux OS. </p>
                     <p>For language, C and C++ are very manual in a sense that the memory allocation and deallocation managements become noticeable problems for large computations. One has to be more careful of declaring multidimensional arrays as there are many type-sensitive issues in C and C++. In order to have a more universality and object-oriented approach, we decided MPI4PY was a better choice to use overall.</p>
                     <br>
                 </div>

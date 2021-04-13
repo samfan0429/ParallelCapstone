@@ -11,7 +11,6 @@
 
     <body>
         <div class="wrapper">
-            <Header>Capstone 2021</Header>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -27,10 +26,39 @@
                     <li><a href="references.html">References</a></li>
                 </ul>
             </nav>
+            <br>
             <div class="contents">
-                <h1 style="text-align: center;">Welcome to 2021 Capstone</h1>
-                <h2>WDDA</h2>
-                <p>This is another paragraph.</p>
+                <h1 style="text-align: center;">Future Work</h1>
+                <h2>Comparison with Scatter-Gather</h2>
+                <p>During the experiment, we made a parallelization for
+                    the message-passing method but not the scatter-gather. Comparing
+                    the two could tell which MPI algorithm turns out to be more
+                    efficient and faster. The comparison can also imply the "time-weight"
+                    of each problem. Scatter-gather may turn out to be more efficient and faster
+                    in communication speed within the workers than the message-passing by rows. Maybe
+                    having more work in some of the workers causes a significant delay that the runtime
+                    can be reduced even more through scatter-gather. All given possibilities are unknown and require
+                    scalability testing to be compared.
+                </p>
+                <h2>Further Parallelization</h2>
+                <p>
+                    The answer can be both yes and no. There is a package named
+                    "Pymp" but compatible with mostly Linux OS. The reason for such is that
+                    Linux has a forking function in the OS that enables it unlike Windows.
+                    Unless the package developers manage to create a directive for Mac and
+                    Windows OS separately, Pymp would not be a viable package to further
+                    parallelize the program. But if they do, we can manage to make each
+                    processor to create subprocesses that will run loops with its given
+                    threads. The experiments were done on Macalester College's server, where
+                    it runs on Linux OS (I used Bash and Shell files to execute programs).
+                    <br><br>
+                    If we are to say that the program does manage to find its way to be parallelized
+                    with Pymp on other OS, the general expectation would be that the speed-up doubles.
+                    Each processor are capable of utilizing two threads each on average. When we use 16
+                    processors with two threads in each, we end up with total of 32 threads. This "could"
+                    make the program run faster. I am saying that it is "could" because it may not
+                    necessarily speed-up the program nearly as close to our hypothesis.
+                </p>
             </div>
             
         </div>

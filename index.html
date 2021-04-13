@@ -11,7 +11,6 @@
 
     <body>
         <div class="wrapper">
-            <Header>Capstone 2021</Header>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -27,10 +26,26 @@
                     <li><a href="references.html">References</a></li>
                 </ul>
             </nav>
+            <br>
             <div class="contents">
-                <h1 style="text-align: center;">Welcome to 2021 Capstone</h1>
-                <h2>WDDA</h2>
-                <p>This is another paragraph.</p>
+                <h1 style="text-align: center;">Parallelization With MPI4PY</h1>
+                <p>For the Macalester summer research of 2020, I worked on the parallelization of a computational 
+                    program relevant to viscous fluid mechanics provided by Professor William Mitchell.
+                    <br> <br>
+                    There  were  two  versions  of  the  code;  the  simpler  one  is  called  "Slender-Body  Theory" and a more complicated one is called the "full-PDE."
+                    The most time-costly part of both computations was the numerical evaluation of many integrals (one-dimensional integrals for Slender-Body Theory, and improper surface integrals for the full PDE). 
+                    Both versions were implemented using multidimensional array operations in NumPy. 
+                    My attempts were to parallelize the Slender-Body Theory computation by flattening the arrays and using "scatter-gather" operations or simple message-passing with the MPI4PY package in Python.
+                    <br><br>
+                    Due to time limit of the project, the analysis of the program's parallelism was done on 
+                    the simple message-passing with the newest version of "full-PDE," main program to be parallelized in the project.
+                    <br><br>
+                    In the instruction section, I explain about the background and capabilities of MPI and MPI4PY package.
+                    The work section explores the details of MPI4PY and the specific algorithm with pseudocode that
+                    explains of what happened in specific with variables. At the end of the work section, I give a brief
+                    analysis on the results of parallelization and its speed-ups. The future work is a brief page that
+                    explains on the future of parallelization with this program.
+                </p>
             </div>
             
         </div>

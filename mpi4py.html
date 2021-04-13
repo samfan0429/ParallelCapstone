@@ -11,7 +11,7 @@
 
     <body>
         <div class="wrapper">
-            <Header>Capstone 2021</Header>
+         
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -27,47 +27,49 @@
                     <li><a href="references.html">References</a></li>
                 </ul>
             </nav>
+            <br>
             <div class="contents">
                 <h1 style="text-align: center;">MPI4PY</h1>
+                <p>The information here are referred from <a target="_blank" href="https://mpi4py.readthedocs.io/en/stable/">mpi4py.readthedocs.io</a> [2].</p>
                 <h2>Run & Initialize</h2>
                 <p>
                     The workers are spawned as soon as the program runs. In order to run the program
                     with MPI4PY, you need to use the following format in the commands:
                 </p>
-                <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code>    <i>mpirun -np <span class="se"><--Number of Workers--></span> python <span class="se"><--Program Name--></span></i></code></pre>
+                <pre style="font-size: 15px;color: white;background-color: black;width: 95%;padding: 5px 3px;margin-left: 20px;"><code>    mpirun -np <span class="se"><--Number of Workers--></span> python <span class="se"><--Program Name--></span>.py</code></pre>
                 <p>
                     Then the program should immediately indicate the communicator for message-passing.
                 </p>
-                <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code><span class="c1">    #Initialize communicator object and its information</span>
+                <pre style="font-size: 15px;background-color: antiquewhite;width: 95%;padding: 5px 3px;margin-left: 20px;"><code><span class="c1">    #Initialize communicator object and its information</span>
     <span class="n" style="text-indent: 0;">comm</span> <span class="b">=</span> <span class="ob">MPI</span><span class="o">.</span><span class="ob">COMM_WORLD</span>
     <span class="n">id</span> <span class="b">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">Get_rank</span><span class="p">()</span>            <span class="c1">#ID number assigned to the particular worker reading the line</span>
     <span class="n">numProcesses</span> <span class="b">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">Get_size</span><span class="p">()</span>  <span class="c1">#total number of workers</span></code></pre>
                 <p>
-                    The above codes initialize the communicator object for each worker. All workers
+                    <code style="background-color: lightgray;"><span class="ob">MPI</span><span class="o">.</span><span class="ob">COMM_WORLD</span></code> initializes the communicator object for each worker. All workers
                     read the codes top to bottom of their own. Each worker will have its unique value saved
-                    for "id" and have its own allocation to save the value "numProcesses" after running
-                    the above codes. If we say "x=2" afterwards, each worker gets a value called "x" with 2 assigned.
+                    for <code style="background-color: lightgray;">id</code> and have its own allocation to save the value <code style="background-color: lightgray;">numProcesses</code> after running
+                    the above codes. If we say <code style="background-color: lightgray;">x<span class="b">=</span>2</code> afterwards, each worker gets a value called <code style="background-color: lightgray;">x</code> with 2 assigned.
                     The assigned values are same but the memory that the value lies is not the same. Each worker
-                    has its own "x=2." These values are not shared unless indicated so using the below functions.
+                    has its own <code style="background-color: lightgray;">x<span class="b">=</span>2</code>. These values are not shared unless indicated so using the below functions.
                 </p>
                 <h2>Send-Receive</h2>
-                <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code><span class="c1">    #Send and receive values between workers</span>
+                <pre style="font-size: 15px;background-color: antiquewhite;width: 95%;padding: 5px 3px;margin-left: 20px;"><code><span class="c1">    #Send and receive values between workers</span>
     <span class="n">comm</span><span class="o">.</span><span class="ob">send</span>(<i>value</i>, dest<span class="b">=</span><i>worker_id</i>)         <span class="c1">#Sends the designated value from the given worker to another</span>
     <span class="n"><i>variable</i></span> <span class="b">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">recv</span><span class="p">(source<span class="b">=</span><i>worker_id</i>)</span>   <span class="c1">#Receives a value from the designated worker</span></code></pre>
-                <p>The "send" function sends a value in from a certain worker to a different worker
-                    that has the "recv" being executed. The "recv" function receives an incoming value
+                <p>The <code style="background-color: lightgray;"><span class="ob">send</span><span class="p"></code> function sends a value in from a certain worker to a different worker
+                    that has the <code style="background-color: lightgray;"><span class="ob">recv</span><span class="p"></code> being executed. The <code style="background-color: lightgray;"><span class="ob">recv</span><span class="p"></code> function receives an incoming value
                     from a particular worker and assigns the received value to the given variable.
                     The basic usage of the functions are quite simplified. But when a worker
-                    "send" a value to another worker but the worker, which is intended to be receiving, fails to receive,
+                    <code style="background-color: lightgray;"><span class="ob">send</span><span class="p"></code> a value to another worker but the worker, which is intended to be receiving, fails to receive,
                     the process then gets on a hold unless we create an exception error to break
-                    the loop. The same goes for the "recv" function as well. If there is no value incoming
+                    the loop. The same goes for the <code style="background-color: lightgray;"><span class="ob">recv</span><span class="p"></code> function as well. If there is no value incoming
                     from the designated sender, the process also holds. <br> <br>
                     
                     If we wanted to put all values from workers other than zero to zero, we have an option to that manually. 
                     For this example, assume that we have the communicator
                     initialized. Then the code went as the following:
                 </p>
-                <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code><span class="if">    if</span> id <span class="b">==</span> 0:
+                <pre style="font-size: 15px;background-color: antiquewhite;width: 95%;padding: 5px 3px;margin-left: 20px;"><code><span class="if">    if</span> id <span class="b">==</span> 0:
         <span class="if">for</span> i <span class="b">in</span> <span class="ow">range</span>(1,numProcesses):
             <span class="n"><i>value</i></span> <span class="b">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">recv</span><span class="p">(source<span class="b">=</span><b>i</b>)</span>
             <i>some_array</i>.<span class="ob">append</span>(<i>value</i>)
@@ -75,48 +77,48 @@
     <span class="n" style="text-indent: 0;">    <span class="n">comm</span><span class="o">.</span><span class="ob">send</span>(<i>value</i>, dest<span class="b">=</span><b>0</b>)</code></pre>
                 
                 <p>
-                    When going the other way from worker zero to everywhere else, we just switch the "send" and "recv" from above.
+                    When going the other way from worker zero to everywhere else, we just switch the <code style="background-color: lightgray;"><span class="ob">send</span><span class="p"></code> and <code style="background-color: lightgray;"><span class="ob">recv</span><span class="p"></code> from above.
                 </p>
                 
-                <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code><span class="if">    if</span> id <span class="b">==</span> 0:
+                <pre style="font-size: 15px;background-color: antiquewhite;width: 95%;padding: 5px 3px;margin-left: 20px;"><code><span class="if">    if</span> id <span class="b">==</span> 0:
         <span class="if">for</span> i <span class="b">in</span> <span class="ow">range</span>(1,numProcesses):
             <span class="n" style="text-indent: 0;"><span class="n">comm</span><span class="o">.</span><span class="ob">send</span>(<i>value</i>, dest<span class="b">=</span><b>i</b>)
     <span class="if">else:</span>
         <span class="n"><i>value</i></span> <span class="b">=</span> <span class="n">comm</span><span class="o">.</span><span class="ob">recv</span><span class="p">(source<span class="b">=</span><b>0</b>)</span></code></pre>
                 <h2>Scatter-Gather</h2>
-                <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code><span class="c1">    #Scatters and Gathers the arrays to and from other workers</span>
-    <span class="n">comm</span><span class="o">.</span><span class="ob">Scatter</span>(<i>source_array</i>, <i>array_part_in_each_worker</i>, root<span class="b">=</span><i>worker_to_scatter_from</i>) <span class="c1">#Scatters an array to each worker</span>
+                <pre style="font-size: 15px;background-color: antiquewhite;width: 95%;padding: 5px 3px;margin-left: 20px;"><code><span class="c1">    #Scatters and Gathers the arrays to and from other workers</span>
+    <span class="n">comm</span><span class="o">.</span><span class="ob">Scatter</span>(<i>source_array</i>, <i>array_part_in_each_worker</i>, root<span class="b">=</span><i>worker_to_scatter_from</i>) <span class="c1">#Scatters an array</span>
     <span class="n">comm</span><span class="o">.</span><span class="ob">Gather</span>(<i>array_part</i>, <i>source_array</i>, root<span class="b">=</span><i>target_worker_to_gather</i>) <span class="c1">#Gathers the array parts</span></code></pre>
             <p>
-                Previously, we used a "for" loop to gather and spread the data from one worker
-                to other workers. What "Scatter" and "Gather" does is the abbreviated version
-                of the above loops. Then would you always use "Scatter" and "Gather" over
+                Previously, we used a <code style="background-color: lightgray;"><span class="if">for</span></code> loop to gather and spread the data from one worker
+                to other workers. What <code style="background-color: lightgray;"><span class="ob">Scatter</span></code> and <code style="background-color: lightgray;"><span class="ob">Gather</span></code> does is the abbreviated version
+                of the above loops. Then would you always use <code style="background-color: lightgray;"><span class="ob">Scatter</span></code> and <code style="background-color: lightgray;"><span class="ob">Gather</span></code> over
                 loops? That is not always applicable depending on the problem you are solving.
-                "Scatter" and "Gather" do not permit multidimensional arrays; only flattened
+                <code style="background-color: lightgray;"><span class="ob">Scatter</span></code> and <code style="background-color: lightgray;"><span class="ob">Gather</span></code> do not permit multidimensional arrays; only flattened
                 one-dimensional arrays can be used to perform the two. Before scattering,
                 each worker needs its own space allocated to receive the array part.
                 <br> <br> 
                 The interesting part about these functions is that all processes need to be
                     aware of the variable name. For this example, assume that we have the communicator
-                    initialized with total of four processes (workers) in parallel. We get an error if the immediate succeeding code as the following:
+                    initialized with total of four processes (workers) in parallel. We get an error if the immediate succeeding code is the following:
             </p>        
-                    <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code>    <span class="if">if</span> id <span class="b">==</span> 0:
+                    <pre style="font-size: 15px;background-color: antiquewhite;width: 95%;padding: 5px 3px;margin-left: 20px;"><code>    <span class="if">if</span> id <span class="b">==</span> 0:
         A<span class="b"> = </span><span class="ow">array</span>([<span class="b">1</span>,<span class="b">2</span>,<span class="b">3</span>,<span class="b">4</span>])
     part_A<span class="b"> = </span><span class="ow">empty</span>(1,dtype<span class="b">=</span>complex)
     <span class="n">comm</span><span class="o">.</span><span class="ob">Scatter</span>(A, part_A, root<span class="b">=</span>0)</code></pre>
             <p>
                 We would get an error because other workers other than worker zero is not aware
-                of the array name "A." In order for this to work, we would have to change it to the following:
+                of the array name <code style="background-color: lightgray;">A</code>. In order for this to work, we would have to change it to the following:
             </p>
-            <pre style="font-size: 15px;background-color: antiquewhite;width: 99%;padding: 5px 3px;"><code>    <span class="if">if</span> id <span class="b">==</span> 0:
+            <pre style="font-size: 15px;background-color: antiquewhite;width: 95%;padding: 5px 3px;margin-left: 20px;"><code>    <span class="if">if</span> id <span class="b">==</span> 0:
         A<span class="b"> = </span><span class="ow">array</span>([<span class="b">1</span>,<span class="b">2</span>,<span class="b">3</span>,<span class="b">4</span>])
     <span class="if">else:</span>
         A<span class="b"> = </span><span class="mb">None</span>
     part_A<span class="b"> = </span><span class="ow">empty</span>(1,dtype<span class="b">=</span>complex)
     <span class="n">comm</span><span class="o">.</span><span class="ob">Scatter</span>(A, part_A, root<span class="b">=</span>0)</code></pre>
             <p>
-                When we want to gather the parts to an array in worker zero with "<span class="if">Gather</span>," we simply switch the parameters
-                from "<span class="if">Scatter</span>," from "(A, part_A, root<span class="b">=</span>0)" to "(part_A, A, root<span class="b">=</span>0)." For some warnings,
+                When we want to gather the parts to an array in worker zero with <code style="background-color: lightgray;"><span class="ob">Gather</span></code>, we simply switch the parameters
+                from <code style="background-color: lightgray;"><span class="ob">Scatter</span></code>, from <code style="background-color: lightgray;">(A, part_A, root<span class="b">=</span>0)</code> to <code style="background-color: lightgray;"><span class="ob">Scatter</span></code>, from <code style="background-color: lightgray;">(part_A, A, root<span class="b">=</span>0)</code>. For some warnings,
                 make sure the source array's size is divisible by the number of workers (this means inserting dummies if necessary) for scattering and have the array parts
                 be equal for each worker for gathering.
             </p>
